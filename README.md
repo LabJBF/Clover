@@ -1,7 +1,3 @@
-<p align="right">
-  <img align="right" height="140" src="https://github.com/PureKFD/PureKFD/blob/v6/Icon.png?raw=true" alt="PureKFD Logo" style="float: right; border-radius: 10px;"/>
-</p>
-
 # Clover
 > SideStore is an untethered alternative app store for non-jailbroken iOS devices
 
