@@ -30,14 +30,19 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            CloverTheme.background.ignoresSafeArea()
+            CloverTheme.background
+                .ignoresSafeArea()
 
             Group {
                 switch selection {
-                case .discover: DiscoverView()
-                case .sources: SourcesView()
-                case .installed: InstalledView()
-                case .settings: SettingsView()
+                case .discover:
+                    DiscoverView()
+                case .sources:
+                    SourcesView()
+                case .installed:
+                    InstalledView()
+                case .settings:
+                    SettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -85,8 +90,8 @@ struct CloverTabBar: View {
                     }
                     .foregroundStyle(
                         selection == tab
-                        ? CloverTheme.accent
-                        : Color.primary.opacity(0.65)
+                            ? CloverTheme.accent
+                            : Color.primary.opacity(0.65)
                     )
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
@@ -98,6 +103,9 @@ struct CloverTabBar: View {
                                 style: .continuous
                             )
                             .fill(CloverTheme.accent.opacity(0.15))
+                            .modifier(
+                                SelectedTabGlassEffect()
+                            )
                         }
                     }
                 }
@@ -113,23 +121,65 @@ struct CloverTabBar: View {
                 cornerRadius: 25,
                 style: .continuous
             )
-            .fill(.ultraThinMaterial)
-            .overlay {
-                RoundedRectangle(
+            .fill(.clear)
+            .modifier(TabBarGlassEffect())
+        }
+        .shadow(
+            color: .black.opacity(0.12),
+            radius: 18,
+            x: 0,
+            y: 7
+        )
+    }
+}
+
+struct TabBarGlassEffect: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .glassEffect(.regular, in: .rect(cornerRadius: 25))
+                .overlay {
+                    RoundedRectangle(
+                        cornerRadius: 25,
+                        style: .continuous
+                    )
+                    .strokeBorder(
+                        Color.primary.opacity(0.10),
+                        lineWidth: 0.7
+                    )
+                }
+        } else {
+            content
+                .background(.ultraThinMaterial, in: RoundedRectangle(
                     cornerRadius: 25,
                     style: .continuous
+                ))
+                .overlay {
+                    RoundedRectangle(
+                        cornerRadius: 25,
+                        style: .continuous
+                    )
+                    .strokeBorder(
+                        Color.primary.opacity(0.12),
+                        lineWidth: 1
+                    )
+                }
+        }
+    }
+}
+
+struct SelectedTabGlassEffect: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .glassEffect(
+                    .regular.tint(CloverTheme.accent.opacity(0.25)),
+                    in: .rect(cornerRadius: 18)
                 )
-                .strokeBorder(
-                    Color.primary.opacity(0.12),
-                    lineWidth: 1
-                )
-            }
-            .shadow(
-                color: .black.opacity(0.12),
-                radius: 18,
-                x: 0,
-                y: 7
-            )
+        } else {
+            content
         }
     }
 }
