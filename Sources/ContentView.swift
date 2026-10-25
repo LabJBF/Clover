@@ -1,10 +1,21 @@
-
 import SwiftUI
 
 enum CloverTheme {
-    static let accent = Color(red: 0.42, green: 0.38, blue: 0.98)
-    static let secondaryAccent = Color(red: 0.24, green: 0.68, blue: 0.98)
-    static let background = Color(uiColor: .systemGroupedBackground)
+    static let accent = Color(
+        red: 0.42,
+        green: 0.38,
+        blue: 0.98
+    )
+
+    static let secondaryAccent = Color(
+        red: 0.24,
+        green: 0.68,
+        blue: 0.98
+    )
+
+    static let background = Color(
+        uiColor: .systemGroupedBackground
+    )
 }
 
 enum CloverTab: String, CaseIterable, Identifiable {
@@ -13,14 +24,20 @@ enum CloverTab: String, CaseIterable, Identifiable {
     case installed = "Installed"
     case settings = "Settings"
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var symbol: String {
         switch self {
-        case .discover: "sparkles"
-        case .sources: "square.stack.3d.up.fill"
-        case .installed: "checkmark.square.fill"
-        case .settings: "gearshape.fill"
+        case .discover:
+            "sparkles"
+        case .sources:
+            "square.stack.3d.up.fill"
+        case .installed:
+            "checkmark.square.fill"
+        case .settings:
+            "gearshape.fill"
         }
     }
 }
@@ -29,158 +46,44 @@ struct ContentView: View {
     @State private var selection: CloverTab = .discover
 
     var body: some View {
-        ZStack {
-            CloverTheme.background
-                .ignoresSafeArea()
-
-            Group {
-                switch selection {
-                case .discover:
-                    DiscoverView()
-                case .sources:
-                    SourcesView()
-                case .installed:
-                    InstalledView()
-                case .settings:
-                    SettingsView()
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            CloverTabBar(selection: $selection)
-                .padding(.horizontal, 14)
-                .padding(.top, 8)
-                .padding(.bottom, 5)
-                .background {
-                    LinearGradient(
-                        colors: [
-                            CloverTheme.background.opacity(0),
-                            CloverTheme.background.opacity(0.3)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
+        TabView(selection: $selection) {
+            DiscoverView()
+                .tabItem {
+                    Label(
+                        CloverTab.discover.rawValue,
+                        systemImage: CloverTab.discover.symbol
                     )
-                    .ignoresSafeArea(edges: .bottom)
                 }
-        }
-    }
-}
+                .tag(CloverTab.discover)
 
-struct CloverTabBar: View {
-    @Binding var selection: CloverTab
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(CloverTab.allCases) { tab in
-                let isSelected = selection == tab
-
-                Button {
-                    withAnimation(
-                        .spring(
-                            response: 0.32,
-                            dampingFraction: 0.78
-                        )
-                    ) {
-                        selection = tab
-                    }
-                } label: {
-                    VStack(spacing: 6) {
-                        Image(systemName: tab.symbol)
-                            .font(
-                                .system(size: 25, weight: .medium)
-                            )
-                            .frame(height: 30)
-
-                        Text(tab.rawValue)
-                            .font(
-                                .system(size: 12, weight: .semibold)
-                            )
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.75)
-                    }
-                    .foregroundStyle(
-                        isSelected
-                            ? CloverTheme.accent
-                            : Color.primary.opacity(0.9)
+            SourcesView()
+                .tabItem {
+                    Label(
+                        CloverTab.sources.rawValue,
+                        systemImage: CloverTab.sources.symbol
                     )
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 76)
-                    .contentShape(Capsule())
-                    .background {
-                        if isSelected {
-                            Capsule()
-                                .fill(
-                                    Color.primary.opacity(0.07)
-                                )
-                                .modifier(
-                                    SelectedTabGlassEffect()
-                                )
-                        }
-                    }
                 }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(
-                    isSelected ? .isSelected : []
-                )
-            }
-        }
-        .padding(6)
-        .background {
-            Capsule()
-                .fill(.clear)
-                .modifier(TabBarGlassEffect())
-        }
-        .overlay {
-            Capsule()
-                .strokeBorder(
-                    Color.primary.opacity(0.14),
-                    lineWidth: 1
-                )
-                .allowsHitTesting(false)
-        }
-        .shadow(
-            color: .black.opacity(0.16),
-            radius: 12,
-            x: 0,
-            y: 5
-        )
-    }
-}
+                .tag(CloverTab.sources)
 
-struct TabBarGlassEffect: ViewModifier {
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .glassEffect(
-                    .regular,
-                    in: .capsule
-                )
-        } else {
-            content
-                .background(
-                    .ultraThinMaterial,
-                    in: Capsule()
-                )
-        }
-    }
-}
+            InstalledView()
+                .tabItem {
+                    Label(
+                        CloverTab.installed.rawValue,
+                        systemImage: CloverTab.installed.symbol
+                    )
+                }
+                .tag(CloverTab.installed)
 
-struct SelectedTabGlassEffect: ViewModifier {
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .glassEffect(
-                    .regular.tint(
-                        CloverTheme.accent.opacity(0.18)
-                    ),
-                    in: .capsule
-                )
-        } else {
-            content
+            SettingsView()
+                .tabItem {
+                    Label(
+                        CloverTab.settings.rawValue,
+                        systemImage: CloverTab.settings.symbol
+                    )
+                }
+                .tag(CloverTab.settings)
         }
+        .tint(CloverTheme.accent)
     }
 }
 
@@ -256,3 +159,4 @@ struct CloverHeader: View {
         .padding(.top, 8)
     }
 }
+
