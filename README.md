@@ -1,3 +1,5 @@
+[!Artboard](https://github.com/LabJBF/Clover/blob/main/Icon.png)
+
 # Clover
 > SideStore is an untethered alternative app store for non-jailbroken iOS devices
 
