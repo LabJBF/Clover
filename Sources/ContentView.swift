@@ -73,62 +73,77 @@ struct CloverTabBar: View {
     var body: some View {
         HStack(spacing: 4) {
             ForEach(CloverTab.allCases) { tab in
+                let isSelected = selection == tab
+
                 Button {
-                    withAnimation(.snappy(duration: 0.22)) {
+                    withAnimation(
+                        .spring(
+                            response: 0.32,
+                            dampingFraction: 0.78
+                        )
+                    ) {
                         selection = tab
                     }
                 } label: {
-                    VStack(spacing: 5) {
+                    VStack(spacing: 6) {
                         Image(systemName: tab.symbol)
-                            .font(.system(size: 21, weight: .semibold))
-                            .frame(height: 25)
+                            .font(
+                                .system(size: 25, weight: .medium)
+                            )
+                            .frame(height: 30)
 
                         Text(tab.rawValue)
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(
+                                .system(size: 12, weight: .semibold)
+                            )
                             .lineLimit(1)
-                            .minimumScaleFactor(0.8)
+                            .minimumScaleFactor(0.75)
                     }
                     .foregroundStyle(
-                        selection == tab
+                        isSelected
                             ? CloverTheme.accent
-                            : Color.primary.opacity(0.65)
+                            : Color.primary.opacity(0.9)
                     )
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .contentShape(Rectangle())
+                    .frame(height: 76)
+                    .contentShape(Capsule())
                     .background {
-                        if selection == tab {
-                            RoundedRectangle(
-                                cornerRadius: 18,
-                                style: .continuous
-                            )
-                            .fill(CloverTheme.accent.opacity(0.15))
-                            .modifier(
-                                SelectedTabGlassEffect()
-                            )
+                        if isSelected {
+                            Capsule()
+                                .fill(
+                                    Color.primary.opacity(0.07)
+                                )
+                                .modifier(
+                                    SelectedTabGlassEffect()
+                                )
                         }
                     }
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(
-                    selection == tab ? .isSelected : []
+                    isSelected ? .isSelected : []
                 )
             }
         }
         .padding(6)
         .background {
-            RoundedRectangle(
-                cornerRadius: 25,
-                style: .continuous
-            )
-            .fill(.clear)
-            .modifier(TabBarGlassEffect())
+            Capsule()
+                .fill(.clear)
+                .modifier(TabBarGlassEffect())
+        }
+        .overlay {
+            Capsule()
+                .strokeBorder(
+                    Color.primary.opacity(0.14),
+                    lineWidth: 1
+                )
+                .allowsHitTesting(false)
         }
         .shadow(
-            color: .black.opacity(0.12),
-            radius: 18,
+            color: .black.opacity(0.16),
+            radius: 12,
             x: 0,
-            y: 7
+            y: 5
         )
     }
 }
@@ -138,33 +153,16 @@ struct TabBarGlassEffect: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content
-                .glassEffect(.regular, in: .rect(cornerRadius: 25))
-                .overlay {
-                    RoundedRectangle(
-                        cornerRadius: 25,
-                        style: .continuous
-                    )
-                    .strokeBorder(
-                        Color.primary.opacity(0.10),
-                        lineWidth: 0.7
-                    )
-                }
+                .glassEffect(
+                    .regular,
+                    in: .capsule
+                )
         } else {
             content
-                .background(.ultraThinMaterial, in: RoundedRectangle(
-                    cornerRadius: 25,
-                    style: .continuous
-                ))
-                .overlay {
-                    RoundedRectangle(
-                        cornerRadius: 25,
-                        style: .continuous
-                    )
-                    .strokeBorder(
-                        Color.primary.opacity(0.12),
-                        lineWidth: 1
-                    )
-                }
+                .background(
+                    .ultraThinMaterial,
+                    in: Capsule()
+                )
         }
     }
 }
@@ -175,8 +173,10 @@ struct SelectedTabGlassEffect: ViewModifier {
         if #available(iOS 26.0, *) {
             content
                 .glassEffect(
-                    .regular.tint(CloverTheme.accent.opacity(0.25)),
-                    in: .rect(cornerRadius: 18)
+                    .regular.tint(
+                        CloverTheme.accent.opacity(0.18)
+                    ),
+                    in: .capsule
                 )
         } else {
             content
@@ -190,7 +190,10 @@ struct GlassCard<Content: View>: View {
     var body: some View {
         content
             .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
             .background {
                 RoundedRectangle(
                     cornerRadius: 22,
@@ -217,14 +220,23 @@ struct CloverHeader: View {
     let subtitle: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(
+            alignment: .leading,
+            spacing: 6
+        ) {
             Text(eyebrow.uppercased())
                 .font(.caption.weight(.bold))
                 .tracking(1.4)
                 .foregroundStyle(CloverTheme.accent)
 
             Text(title)
-                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .font(
+                    .system(
+                        size: 34,
+                        weight: .bold,
+                        design: .rounded
+                    )
+                )
                 .foregroundStyle(.primary)
                 .minimumScaleFactor(0.8)
                 .lineLimit(1)
@@ -232,9 +244,15 @@ struct CloverHeader: View {
             Text(subtitle)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+                .fixedSize(
+                    horizontal: false,
+                    vertical: true
+                )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
         .padding(.top, 8)
     }
 }
