@@ -1,7 +1,7 @@
 [!Artboard](https://github.com/LabJBF/Clover/blob/main/Icon.png)
 
 # Clover
-> SideStore is an untethered alternative app store for non-jailbroken iOS devices
+> Clover is an untethered alternative app store for non-jailbroken iOS devices
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
@@ -18,4 +18,4 @@ Clover’s goal is to provide an untethered sideloading experience. It’s an in
 - Rustup (`brew install rustup`)
 
 # Clover
-SideStore is a just regular, sandboxed iOS application. The AltStore app target contains the vast majority of SideStore's functionality, including all the logic for downloading and updating apps through SideStore. SideStore makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with.
+Clover is a just regular, sandboxed iOS application. The AltStore app target contains the vast majority of Clover's functionality, including all the logic for downloading and updating apps through Clover. Clover makes heavy use of standard iOS frameworks and technologies most iOS developers are familiar with.
