@@ -26,6 +26,7 @@ enum CloverTab: String, CaseIterable, Hashable, Identifiable {
 
 struct ContentView: View {
     @State private var selection: CloverTab = .discover
+    @AppStorage("clover.appearance") private var appearance = "system"
 
     var body: some View {
         Group {
@@ -38,7 +39,11 @@ struct ContentView: View {
             }
         }
         .tint(CloverTheme.accent)
-    }
+.preferredColorScheme(
+    appearance == "system"
+        ? nil
+        : (appearance == "dark" ? .dark : .light)
+)
 
     @available(iOS 18.0, *)
     private var nativeTabView: some View {
