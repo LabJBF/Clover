@@ -44,6 +44,7 @@ struct ContentView: View {
         ? nil
         : (appearance == "dark" ? .dark : .light)
 )
+    }
 
     @available(iOS 18.0, *)
     private var nativeTabView: some View {
