@@ -1,34 +1,21 @@
 import SwiftUI
 
-enum CloverTheme {
-    static let accent = Color(
-        red: 0.42,
-        green: 0.38,
-        blue: 0.98
-    )
-
-    static let secondaryAccent = Color(
-        red: 0.24,
-        green: 0.68,
-        blue: 0.98
-    )
-
-    static let background = Color(
-        uiColor: .systemGroupedBackground
-    )
-}
-
-enum CloverTab: Hashable {
-    case discover
-    case sources
-    case installed
-    case settings
-}
-
 struct ContentView: View {
     @State private var selection: CloverTab = .discover
 
     var body: some View {
+        Group {
+            if #available(iOS 18.0, *) {
+                nativeTabView
+            } else {
+                legacyTabView
+            }
+        }
+        .tint(CloverTheme.accent)
+    }
+
+    @available(iOS 18.0, *)
+    private var nativeTabView: some View {
         TabView(selection: $selection) {
             Tab(
                 "Discover",
@@ -62,79 +49,39 @@ struct ContentView: View {
                 SettingsView()
             }
         }
-        .tint(CloverTheme.accent)
     }
-}
 
-struct GlassCard<Content: View>: View {
-    @ViewBuilder var content: Content
+    private var legacyTabView: some View {
+        TabView(selection: $selection) {
+            DiscoverView()
+                .tabItem {
+                    Label("Discover", systemImage: "sparkles")
+                }
+                .tag(CloverTab.discover)
 
-    var body: some View {
-        content
-            .padding(16)
-            .frame(
-                maxWidth: .infinity,
-                alignment: .leading
-            )
-            .background {
-                RoundedRectangle(
-                    cornerRadius: 22,
-                    style: .continuous
-                )
-                .fill(.regularMaterial)
-                .overlay {
-                    RoundedRectangle(
-                        cornerRadius: 22,
-                        style: .continuous
-                    )
-                    .strokeBorder(
-                        Color.primary.opacity(0.1),
-                        lineWidth: 1
+            SourcesView()
+                .tabItem {
+                    Label(
+                        "Sources",
+                        systemImage: "square.stack.3d.up.fill"
                     )
                 }
-            }
-    }
-}
+                .tag(CloverTab.sources)
 
-struct CloverHeader: View {
-    let eyebrow: String
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: 6
-        ) {
-            Text(eyebrow.uppercased())
-                .font(.caption.weight(.bold))
-                .tracking(1.4)
-                .foregroundStyle(CloverTheme.accent)
-
-            Text(title)
-                .font(
-                    .system(
-                        size: 34,
-                        weight: .bold,
-                        design: .rounded
+            InstalledView()
+                .tabItem {
+                    Label(
+                        "Installed",
+                        systemImage: "checkmark.square.fill"
                     )
-                )
-                .foregroundStyle(.primary)
-                .minimumScaleFactor(0.8)
-                .lineLimit(1)
+                }
+                .tag(CloverTab.installed)
 
-            Text(subtitle)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(
-                    horizontal: false,
-                    vertical: true
-                )
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape.fill")
+                }
+                .tag(CloverTab.settings)
         }
-        .frame(
-            maxWidth: .infinity,
-            alignment: .leading
-        )
-        .padding(.top, 8)
     }
 }
