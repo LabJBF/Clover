@@ -18,28 +18,11 @@ enum CloverTheme {
     )
 }
 
-enum CloverTab: String, CaseIterable, Identifiable {
-    case discover = "Discover"
-    case sources = "Sources"
-    case installed = "Installed"
-    case settings = "Settings"
-
-    var id: String {
-        rawValue
-    }
-
-    var symbol: String {
-        switch self {
-        case .discover:
-            "sparkles"
-        case .sources:
-            "square.stack.3d.up.fill"
-        case .installed:
-            "checkmark.square.fill"
-        case .settings:
-            "gearshape.fill"
-        }
-    }
+enum CloverTab: Hashable {
+    case discover
+    case sources
+    case installed
+    case settings
 }
 
 struct ContentView: View {
@@ -47,41 +30,37 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            DiscoverView()
-                .tabItem {
-                    Label(
-                        CloverTab.discover.rawValue,
-                        systemImage: CloverTab.discover.symbol
-                    )
-                }
-                .tag(CloverTab.discover)
+            Tab(
+                "Discover",
+                systemImage: "sparkles",
+                value: CloverTab.discover
+            ) {
+                DiscoverView()
+            }
 
-            SourcesView()
-                .tabItem {
-                    Label(
-                        CloverTab.sources.rawValue,
-                        systemImage: CloverTab.sources.symbol
-                    )
-                }
-                .tag(CloverTab.sources)
+            Tab(
+                "Sources",
+                systemImage: "square.stack.3d.up.fill",
+                value: CloverTab.sources
+            ) {
+                SourcesView()
+            }
 
-            InstalledView()
-                .tabItem {
-                    Label(
-                        CloverTab.installed.rawValue,
-                        systemImage: CloverTab.installed.symbol
-                    )
-                }
-                .tag(CloverTab.installed)
+            Tab(
+                "Installed",
+                systemImage: "checkmark.square.fill",
+                value: CloverTab.installed
+            ) {
+                InstalledView()
+            }
 
-            SettingsView()
-                .tabItem {
-                    Label(
-                        CloverTab.settings.rawValue,
-                        systemImage: CloverTab.settings.symbol
-                    )
-                }
-                .tag(CloverTab.settings)
+            Tab(
+                "Settings",
+                systemImage: "gearshape.fill",
+                value: CloverTab.settings
+            ) {
+                SettingsView()
+            }
         }
         .tint(CloverTheme.accent)
     }
@@ -159,4 +138,3 @@ struct CloverHeader: View {
         .padding(.top, 8)
     }
 }
-
