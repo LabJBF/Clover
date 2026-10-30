@@ -1,5 +1,3 @@
-[!Artboard](https://github.com/LabJBF/Clover/blob/main/Icon.png)
-
 # Clover
 > Clover is an untethered alternative app store for non-jailbroken iOS devices
 
@@ -14,7 +12,7 @@ Clover’s goal is to provide an untethered sideloading experience. It’s an in
 
 ## Requirements
 - Xcode 27
-- iOS 17
+- iOS 27
 - Rustup (`brew install rustup`)
 
 # Clover
